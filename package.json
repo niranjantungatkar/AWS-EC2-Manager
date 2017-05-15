@@ -1,0 +1,17 @@
+{
+  "name": "CMPE281",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.50.0",
+    "connect-mongo": "^1.3.2",
+    "ejs": "*",
+    "express": "3.2.6",
+    "express-session": "^1.15.2",
+    "fs": "0.0.1-security",
+    "simple-ssh": "^0.9.0"
+  }
+}
