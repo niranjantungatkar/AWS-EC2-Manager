@@ -52,6 +52,10 @@ app.get('/users', user.list);
 
 
 app.post('/cluster', aws.createCluster);
+app.get('/instances', aws.getInstancesDetails);
+app.get('/metric', aws.getMetricStatisticsForInstance);
+app.post('/stop/cluster',aws.stopCluster);
+app.post('/start/cluster',aws.startCluster);
 
 mongo.connect(mongoSessionConnectURL, function(){  
 	console.log('Connected to mongo at: ' + mongoSessionConnectURL); 
