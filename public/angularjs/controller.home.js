@@ -1,6 +1,7 @@
-systemAdminApp.controller('controllerHome', function($scope, $http){
+systemAdminApp.controller('controllerHome', function($scope, $http,toastr){
 	console.log("In home controller");
-	
+
+    getInstancesDetails();
 	
 	$scope.createCluster = function() {
 		$http({
@@ -15,9 +16,9 @@ systemAdminApp.controller('controllerHome', function($scope, $http){
 			console.log(data);
 		})
 	}
-	
-	
-	$scope.getInstancesDetails = function() {
+
+
+    function getInstancesDetails () {
 		$http({
 			method:'GET',
 			url:'/instances'
@@ -26,9 +27,43 @@ systemAdminApp.controller('controllerHome', function($scope, $http){
 			console.log("data ------------------>");
 			console.log(data);
 			console.log("data ------------------>");
+			$scope.instance=data.data.Reservations;
+			console.log($scope.instance);
+
 		})
+}
+
+
+	$scope.instanceAction = function(status,id){
+
+
+        if(status=='running')
+        {
+            newStatus="Stop";
+            stopCluster(id);
+        }else if(status=='stopped')
+        {
+            newStatus="Start";
+            startCluster(id);
+        }
+
+
 	}
-	
+
+	$scope.changeStatus = function(status){
+		var newStatus;
+		if(status=='running')
+		{
+			newStatus="Stop";
+		}else if(status=='stopped')
+		{
+            newStatus="Start";
+		} else
+		{
+			newStatus=status;
+		}
+		return newStatus;
+	}
 	
 	/*
 	 * instanceId - get from above method - this is a compulsory field
@@ -83,54 +118,144 @@ systemAdminApp.controller('controllerHome', function($scope, $http){
 	 * 
 	 * 
 	 */
-	$scope.getMetric = function() {
-		$http({
-			method:'GET',
-			url:'/metric',
-			/*params: {
-				metricName : 'CPUUtilization',
-				startTime : new Date('Sun May 14 2017 18:00:00 GMT-0800 (PST)'), //
-				endTime : new Date('Mon May 15 2017 18:00:00 GMT-0800 (PST)') ,
-				unit: 'Percent',
-				instanceId : 'i-0b5049fdc1735efc8'
-			}*/
-			params: {
-				 metricName : 'NetworkPacketsOut',
-				 startTime: new Date('Sun May 14 2017 18:00:00 GMT-0800 (PST)'),
-				 endTime: new Date('Mon May 15 2017 18:00:00 GMT-0800 (PST)'),
-				 instanceId : 'i-0b5049fdc1735efc8', //something like this - i-0b5049fdc1735efc8
-				 unit : 'Count'
-				  		
-			}
-		}).success(function(data){
-			console.log(data);
-		})
+   // var dataValue;
+	//  function getMetric (metric,id,unitType) {
+   //
+	// 	return $http({
+	// 		method:'GET',
+	// 		url:'/metric',
+	// 		/*params: {
+	// 			metricName : 'CPUUtilization',
+	// 			startTime : new Date('Sun May 14 2017 18:00:00 GMT-0800 (PST)'), //
+	// 			endTime : new Date('Mon May 15 2017 18:00:00 GMT-0800 (PST)') ,
+	// 			unit: 'Percent',
+	// 			instanceId : 'i-0b5049fdc1735efc8'
+	// 		}*/
+	// 		params: {
+	// 			 metricName : metric,
+	// 			 startTime: new Date('Sun May 14 2017 18:00:00 GMT-0800 (PST)'),
+	// 			 endTime: new Date('Mon May 15 2017 18:00:00 GMT-0800 (PST)'),
+	// 			 instanceId : id, //something like this - i-0b5049fdc1735efc8
+	// 			 unit : unitType
+	//
+	// 		}
+	// 	});
+   //
+	// 	// console.log("dataValue==>insisde==>",dataValue);
+	// 	// return dataValue;
+	// }
+
+	function setValue(value){
+
+	 	console.log("value==>",value);
+	 	dataValue=value;
+	 	console.log("dataValue==>",dataValue);
+
 	}
-	
-	
-	$scope.stopCluster = function() {
+    function getValue(){
+
+		console.log("getValuecalled");
+        // console.log("value==>",value);
+        // dataValue=value;
+       // console.log("getValue===>dataValue==>",dataValue);
+
+    }
+
+	function stopCluster(id)  {
 		$http({
 			method:'POST',
 			url:'/stop/cluster',
 			data:{
-				instanceId:'i-00d4fcfc24acb56a1'
+				instanceId:id
 			}
 		}).success(function(data){
+			toastr.success("Server Instance "+id+"  stopped successfully");
+            getInstancesDetails();
 			console.log(data);
 		})
 	}
 	
-	$scope.startCluster = function() {
+	  function startCluster(id)  {
 		$http({
 			method:'POST',
 			url:'/start/cluster',
 			data:{
-				instanceId:'i-00d4fcfc24acb56a1'
+				instanceId:id
 			}
 		}).success(function(data){
 			console.log(data);
+            toastr.success("Server Instance "+id+"  started successfully");
+            getInstancesDetails();
 		})
 	}
-	
-	
+
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+
+// Create the chart
+    Highcharts.stockChart('container', {
+        chart: {
+            events: {
+                load: function () {
+
+                    // set up the updating of the chart each second
+                    var series = this.series[0];
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = Math.round(Math.random() * 100);
+                        series.addPoint([x, y], true, true);
+                    }, 1000);
+                }
+            }
+        },
+
+        rangeSelector: {
+            buttons: [{
+                count: 1,
+                type: 'minute',
+                text: '1M'
+            }, {
+                count: 5,
+                type: 'minute',
+                text: '5M'
+            }, {
+                type: 'all',
+                text: 'All'
+            }],
+            inputEnabled: false,
+            selected: 0
+        },
+
+        title: {
+            text: 'Live random data'
+        },
+
+        exporting: {
+            enabled: false
+        },
+
+        series: [{
+            name: 'Random data',
+            data: (function () {
+                // generate an array of random data
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -999; i <= 0; i += 1) {
+                    data.push([
+                        time + i * 1000,
+                        Math.round(Math.random() * 100)
+                    ]);
+                }
+                return data;
+            }())
+        }]
+    });
+
+
+
 })

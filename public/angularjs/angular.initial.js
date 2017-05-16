@@ -1,4 +1,4 @@
-var systemAdminApp = angular.module('systemAdminApp',['ui.router']);
+var systemAdminApp = angular.module('systemAdminApp',['ui.router','toastr']);
 //handles client side routing
 systemAdminApp.config(function($stateProvider, $urlRouterProvider){
 	
