@@ -99,7 +99,7 @@ exports.createCluster = function(req, res) {
 		  										var ssh = new SSH({
 		    										host: instanceData.Reservations[0].Instances[0].PublicDnsName,
 		    										user: 'ec2-user',
-		    										key: require('fs').readFileSync('/home/tungatkarniranjan/Downloads/test.pem',"utf8")
+		    										key: require('fs').readFileSync('/home/ec2-user/test.pem',"utf8")
 												});
 			
 												ssh.exec('pwd', {
