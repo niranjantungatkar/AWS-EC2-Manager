@@ -11,7 +11,7 @@ var express = require('express')
   , session = require('express-session')
   , mongo = require("./routes/util.mongo")
   , aws = require("./routes/aws.manager.js")
-  
+  , stats = require("./routes/website.stats.js")
 
 var mongoSessionConnectURL = "mongodb://mak:mak@ds137891.mlab.com:37891/sprouts";
 var mongoStore = require("connect-mongo")(session);
@@ -56,6 +56,8 @@ app.get('/instances', aws.getInstancesDetails);
 app.get('/metric', aws.getMetricStatisticsForInstance);
 app.post('/stop/cluster',aws.stopCluster);
 app.post('/start/cluster',aws.startCluster);
+app.get('/users/stats',stats.getUserStats);
+app.get('/moderators/stats',stats.getModeratorStats);
 
 mongo.connect(mongoSessionConnectURL, function(){  
 	console.log('Connected to mongo at: ' + mongoSessionConnectURL); 
