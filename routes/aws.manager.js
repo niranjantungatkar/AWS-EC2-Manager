@@ -18,7 +18,7 @@ exports.createCluster = function(req, res) {
 	var tagname = req.param('tag');
 	
 	var params = {
-	   ImageId: 'ami-b92047d9', // custom image
+	   ImageId: 'ami-2c57304c', // custom image
 	   InstanceType: 't1.micro',
 	   MinCount: 1,
 	   MaxCount: 1,
@@ -90,7 +90,7 @@ exports.createCluster = function(req, res) {
 		  								if(data.InstanceStatuses[0].SystemStatus.Details[0].Status=="passed" &&
 		  									data.InstanceStatuses[0].InstanceStatus.Details[0].Status=="passed") {
 
-		  									console.log("Instance Running");
+		  									console.log("Instance Running ----->");
 									
 			  								clearInterval(describeInstanceStatus);
 		  									
@@ -115,12 +115,13 @@ exports.createCluster = function(req, res) {
 												ssh.exec('exit',{})
 												
 												res.send({ success: { msg:"Successfully created", data: instanceData} } );
+												
 												ssh.on('error', function(err) {
 													console.log(err);
 												})
 
 												//res.send(instanceData);
-		  									}, 120000)
+		  									}, 60000)
 		  								}
 		  							} else {
 		  								console.log("Instance not running");
@@ -237,16 +238,16 @@ exports.stopCluster = function(req, res) {
 			  DryRun: false
 			  
 			};
-			ec2.stopInstances(params, function(err, data) {
-			  if (err) {
-				  console.log(err, err.stack); // an error occurred
-				  res.send({error:true, data: err})
-			  }
-			  else {
-				  console.log(data);           // successful response
-				  res.send({success: true, data: data});
-			  }
-			});
+	ec2.stopInstances(params, function(err, data) {
+		if (err) {
+			console.log(err, err.stack); // an error occurred
+			res.send({error:true, data: err})
+		}
+		else {
+			console.log(data);           // successful response
+			res.send({success: true, data: data});
+		}
+	});
 }
 
 

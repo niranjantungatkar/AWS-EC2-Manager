@@ -7,6 +7,7 @@ systemAdminApp.controller('controllerHome', function($scope, $http,toastr){
 		$http({
 			method:'POST',
 			url:'/cluster',
+			timeout: 600000,
 			data:{
 				tag : "Test Cluster"
 			}
