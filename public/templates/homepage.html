@@ -49,7 +49,7 @@
 				<div class="col-md-3 col-sm-3  box0">
 					<div class="box1">
 						<i class="fa fa-server" aria-hidden="true"></i>
-						<h3>933{{totalInstances}}</h3>
+						<h3>{{totalInstances}}</h3>
 					</div>
 					<p>Total Instances Running</p>
 				</div>
@@ -63,18 +63,123 @@
 				<div class="col-md-3 col-sm-3 box0">
 					<div class="box1">
 						<i class="fa fa-users" aria-hidden="true"></i>
-						<h3>21{{usersCount}}</h3>
+						<h3>{{usersCount}}</h3>
 					</div>
 					<p>No of users</p>
 				</div>
 				<div class="col-md-3 col-sm-3 box0">
 					<div class="box1">
 						<i class="fa fa-user" aria-hidden="true"></i>
-						<h3>+10{{modCount}}</h3>
+						<h3>+{{modCount}}</h3>
 					</div>
 					<p>No of moderator's</p>
 				</div>
 			</div><!-- /row mt -->
+
+			<div class="col-md-12" style="margin-bottom: 20px">
+				<div class="float-right col-md-6 text-center" >
+					<a href="" data-toggle="modal"  style="color:#68dff0" data-target="#myModal">
+						<i class="fa fa-plus" style="font-size: 60px" aria-hidden="true"></i>
+						<h4 style=" color:rgba(0,0,0,0.8)">Create Server Instance</h4>
+					</a>
+				</div>
+				<div class="float-right col-md-6 text-center" >
+					<a href="" data-toggle="modal"  style="color:#68dff0" data-target="#myModal1">
+						<i class="fa fa-money" style="font-size: 60px" aria-hidden="true"></i>
+						<h4 style=" color:rgba(0,0,0,0.8)">Show Billing Report</h4>
+					</a>
+				</div>
+				<!-- Modal -->
+				<div id="myModal" class="modal fade" role="dialog">
+					<div class="modal-dialog">
+
+						<!-- Modal content-->
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title">Create Your New Server Instance</h4>
+							</div>
+							<div class="modal-body text-center" style="padding: 20px">
+								<input class="form-control" type="text" placeholder="Cluster Name" ng-model="cluster.name">
+								<br>
+								<label class="radio-inline">
+									<input type="radio" ng-model="cluster.monitor" name="monitor">Monitor
+								</label>
+								<label class="radio-inline">
+									<input type="radio" ng-model="cluster.monitor" name="monitor"> Not Monitor
+								</label>
+								<br>
+								<br>
+								<div>
+									<button class="btn btn-warning" ng-click="createCluster(cluster.name)"> Create Cluster</button>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div id="myModal1" class="modal fade" role="dialog">
+					<div class="modal-dialog">
+
+						<!-- Modal content-->
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title">Pay as You go Bill Model</h4>
+							</div>
+							<div class="modal-body" style="padding:20px ;height:auto;overflow:hidden">
+								<div class="col-md-12">
+									<div class="col-md-2">
+										<a href=""><i class="fa fa-database" style="font-size:50px;" aria-hidden="true"></i></a>
+										<h5>Database</h5>
+									</div>
+									<div class="col-md-2">
+										<i class="fa fa-times"  style="font-size:40px;" aria-hidden="true"></i>
+									</div>
+									<div class="col-md-1">
+										<span style="font-size:30px">2</span>
+									</div>
+									<div class="col-md-1">
+									 <span style="font-size:20px">=</span>
+									</div>
+									<div class="col-md-6">
+										<strong><span style="font-size:35px">$ 250</span></strong>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="col-md-2">
+										<a href=""><i class="fa fa-server" style="font-size:50px;" aria-hidden="true"></i></a>
+										<h5>Server</h5>
+									</div>
+									<div class="col-md-2">
+										<i class="fa fa-times"  style="font-size:40px;" aria-hidden="true"></i>
+									</div>
+									<div class="col-md-1">
+										<span style="font-size:30px">{{totalInstances}}</span>
+									</div>
+									<div class="col-md-1">
+										<span style="font-size:20px">=</span>
+									</div>
+									<div class="col-md-6">
+										<strong><span style="font-size:35px">$ {{totalInstances*200}}</span></strong>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+
+
+
+			</div>
 
 		<div class="row">
 			<div class="topic-heading text-center">
@@ -99,6 +204,9 @@
 									<div class="col-md-12" 	style="margin-bottom: 10px">
 										<strong>Status:</strong>&nbsp;&nbsp;&nbsp;{{ins.Instances[0].State.Name}}
 									</div>
+									<div style="font-size: 10px"ng-show ="ins.Instances[0].State.Name=='running'"class="col-md-12" 	style="margin-bottom: 10px">
+										<strong>URL:</strong>&nbsp;&nbsp;&nbsp;<a ng-href="{{'http://'+ins.Instances[0].PublicDnsName+'/8888'}}">{{'http://'+ins.Instances[0].PublicDnsName+'/8888'}}</a>
+									</div>
 
 								</div>
 							</div>
@@ -114,65 +222,14 @@
 							</div>
 						</div>
 					</div><! --/grey-panel -->
+
+
+
 				</div><!-- /col-md-4-->
 			</div><!-- /row -->
 			<div class="row">
 				<!-- TWITTER PANEL -->
-				<div class="col-md-4 mb">
-					<div class="darkblue-panel pn">
-						<div class="darkblue-header">
-							<h5>DROPBOX STATICS</h5>
-						</div>
-						<canvas id="serverstatus02" height="120" width="120"></canvas>
-						<script>
-                            var doughnutData = [
-                                {
-                                    value: 60,
-                                    color:"#68dff0"
-                                },
-                                {
-                                    value : 40,
-                                    color : "#444c57"
-                                }
-                            ];
-                            var myDoughnut = new Chart(document.getElementById("serverstatus02").getContext("2d")).Doughnut(doughnutData);
-						</script>
-						<p>April 17, 2014</p>
-						<footer>
-							<div class="pull-left">
-								<h5><i class="fa fa-hdd-o"></i> 17 GB</h5>
-							</div>
-							<div class="pull-right">
-								<h5>60% Used</h5>
-							</div>
-						</footer>
-					</div><! -- /darkblue panel -->
-				</div><!-- /col-md-4 -->
 
-
-				<div class="col-md-4 mb">
-					<!-- INSTAGRAM PANEL -->
-					<div class="instagram-panel pn">
-						<i class="fa fa-instagram fa-4x"></i>
-						<p>@THISISYOU<br/>
-							5 min. ago
-						</p>
-						<p><i class="fa fa-comment"></i> 18 | <i class="fa fa-heart"></i> 49</p>
-					</div>
-				</div><!-- /col-md-4 -->
-
-				<div class="col-md-4 col-sm-4 mb">
-					<!-- REVENUE PANEL -->
-					<div class="darkblue-panel pn">
-						<div class="darkblue-header">
-							<h5>REVENUE</h5>
-						</div>
-						<div class="chart mt">
-							<div class="sparkline" data-type="line" data-resize="true" data-height="75" data-width="90%" data-line-width="1" data-line-color="#fff" data-spot-color="#fff" data-fill-color="" data-highlight-line-color="#fff" data-spot-radius="4" data-data="[200,135,667,333,526,996,564,123,890,464,655]"></div>
-						</div>
-						<p class="mt"><b>$ 17,980</b><br/>Month Income</p>
-					</div>
-				</div><!-- /col-md-4 -->
 
 			</div><!-- /row -->
 		</div>

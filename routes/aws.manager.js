@@ -155,7 +155,7 @@ exports.getInstancesDetails = function(req, res) {
 	   		DryRun: false,
 	  		Filters: [{
 	      		Name: 'image-id',
-	      		Values: ['ami-b92047d9']	
+	      		Values: ['ami-2c57304c']
 	    	}]
 	   	}
 	ec2.describeInstances(describeParams, function(err, data) {

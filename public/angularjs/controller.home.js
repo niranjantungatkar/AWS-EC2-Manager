@@ -2,20 +2,43 @@ systemAdminApp.controller('controllerHome', function($scope, $http,toastr){
 	console.log("In home controller");
 
     getInstancesDetails();
-	
-	$scope.createCluster = function() {
+    getUserStats();
+
+	$scope.createCluster = function(tagValue) {
 		$http({
 			method:'POST',
 			url:'/cluster',
 			timeout: 600000,
 			data:{
-				tag : "Test Cluster"
+				tag : tagValue
 			}
 		}).success(function(data){
 			console.log("Successfully created cluster");
 			console.log("data ------------------>");
 			console.log(data);
+
+            toastr.success("CLuster is Created Successfully");
 		})
+	}
+
+
+	function getUserStats(){
+
+		$http.get('/users/stats').success(function(data){
+
+            $scope.usersCount=data.count;
+			console.log("user Stats",data);
+
+		})
+
+        $http.get('/moderators/stats').success(function(data){
+
+            console.log("moderators Stats",data);
+            $scope.modCount=data.count;
+
+        })
+
+
 	}
 
 
@@ -29,6 +52,7 @@ systemAdminApp.controller('controllerHome', function($scope, $http,toastr){
 			console.log(data);
 			console.log("data ------------------>");
 			$scope.instance=data.data.Reservations;
+            $scope.totalInstances=data.data.Reservations.length;
 			console.log($scope.instance);
 
 		})
@@ -120,32 +144,43 @@ systemAdminApp.controller('controllerHome', function($scope, $http,toastr){
 	 * 
 	 */
    // var dataValue;
-	//  function getMetric (metric,id,unitType) {
-   //
-	// 	return $http({
-	// 		method:'GET',
-	// 		url:'/metric',
-	// 		/*params: {
-	// 			metricName : 'CPUUtilization',
-	// 			startTime : new Date('Sun May 14 2017 18:00:00 GMT-0800 (PST)'), //
-	// 			endTime : new Date('Mon May 15 2017 18:00:00 GMT-0800 (PST)') ,
-	// 			unit: 'Percent',
-	// 			instanceId : 'i-0b5049fdc1735efc8'
-	// 		}*/
-	// 		params: {
-	// 			 metricName : metric,
-	// 			 startTime: new Date('Sun May 14 2017 18:00:00 GMT-0800 (PST)'),
-	// 			 endTime: new Date('Mon May 15 2017 18:00:00 GMT-0800 (PST)'),
-	// 			 instanceId : id, //something like this - i-0b5049fdc1735efc8
-	// 			 unit : unitType
-	//
-	// 		}
-	// 	});
-   //
-	// 	// console.log("dataValue==>insisde==>",dataValue);
-	// 	// return dataValue;
-	// }
 
+	$scope.metricsData;
+	 function getMetric (metric,id,unitType) {
+
+		return $http({
+			method:'GET',
+			url:'/metric',
+			/*params: {
+				metricName : 'CPUUtilization',
+				startTime : new Date('Sun May 14 2017 18:00:00 GMT-0800 (PST)'), //
+				endTime : new Date('Mon May 15 2017 18:00:00 GMT-0800 (PST)') ,
+				unit: 'Percent',
+				instanceId : 'i-0b5049fdc1735efc8'
+			}*/
+			params: {
+				 metricName : metric,
+				 startTime: new Date('Sun May 14 2017 18:00:00 GMT-0800 (PST)'),
+				 endTime: new Date('Mon May 15 2017 18:00:00 GMT-0800 (PST)'),
+				 instanceId : id, //something like this - i-0b5049fdc1735efc8
+				 unit : unitType
+
+			}
+		}).success(function (data) {
+
+			console.log(data);
+			$scope.metricsData=data;
+
+        });
+
+
+
+		// console.log("dataValue==>insisde==>",dataValue);
+		// return dataValue;
+	}
+
+    getMetric('CPUUtilization','i-0b5049fdc1735efc8','Percent');
+    console.log("METRICS SCOPE DATA==>",$scope.metricsData);
 	function setValue(value){
 
 	 	console.log("value==>",value);
@@ -231,7 +266,7 @@ systemAdminApp.controller('controllerHome', function($scope, $http,toastr){
         },
 
         title: {
-            text: 'Live random data'
+            text: 'Server Monitoring Data'
         },
 
         exporting: {
